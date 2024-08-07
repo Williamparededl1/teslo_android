@@ -20,7 +20,7 @@ class RegisterScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 80),
+            const SizedBox(height: 50),
             // Icon Banner
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -31,19 +31,19 @@ class RegisterScreen extends StatelessWidget {
                       context.pop();
                     },
                     icon: const Icon(Icons.arrow_back_rounded,
-                        size: 40, color: Colors.white)),
+                        size: 30, color: Colors.white)),
                 const Spacer(flex: 1),
                 Text('Crear cuenta',
                     style:
                         textStyles.titleLarge?.copyWith(color: Colors.white)),
-                const Spacer(flex: 2),
+                const Spacer(flex: 1),
               ],
             ),
 
             const SizedBox(height: 50),
 
             Container(
-              height: size.height - 260, // 80 los dos sizebox y 100 el ícono
+              height: size.height - 200, // 80 los dos sizebox y 100 el ícono
               width: double.infinity,
               decoration: BoxDecoration(
                 color: scaffoldBackgroundColor,
