@@ -133,6 +133,8 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
   _equalsPasswords() {
     if (state.password.value == state.confirmPassword.value) {
       state = state.copyWith(isEqualsPassword: true);
+    } else {
+      state = state.copyWith(isEqualsPassword: false);
     }
   }
 }

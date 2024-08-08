@@ -46,7 +46,7 @@ class RegisterScreen extends StatelessWidget {
             const SizedBox(height: 50),
 
             Container(
-              height: size.height - 200, // 80 los dos sizebox y 100 el ícono
+              height: size.height, // 80 los dos sizebox y 100 el ícono
               width: double.infinity,
               decoration: BoxDecoration(
                 color: scaffoldBackgroundColor,
@@ -122,9 +122,10 @@ class _RegisterForm extends ConsumerWidget {
               child: CustomFilledButton(
                 text: 'Crear',
                 buttonColor: Colors.black,
-                onPressed: () {},
+                onPressed: () {
+                  ref.read(registerFormProvider.notifier).onFormSubmit();
+                },
               )),
-          const Spacer(flex: 2),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -139,7 +140,6 @@ class _RegisterForm extends ConsumerWidget {
                   child: const Text('Ingresa aquí'))
             ],
           ),
-          const Spacer(flex: 1),
         ],
       ),
     );
