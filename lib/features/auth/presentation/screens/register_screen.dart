@@ -65,9 +65,23 @@ class RegisterScreen extends StatelessWidget {
 class _RegisterForm extends ConsumerWidget {
   const _RegisterForm();
 
+  void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final registerForm = ref.watch(registerFormProvider);
+    ref.listen(
+      authProvider,
+      (previous, next) {
+        if (next.errorMessage.isEmpty) return;
+        showSnackBar(context, next.errorMessage);
+      },
+    );
+
     final textStyles = Theme.of(context).textTheme;
 
     return Padding(

@@ -21,6 +21,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       _setLoggerUser(user);
     } on WrongCredentials {
       logout(errorMessage: 'Credenciales incorrectas');
+    } on ConnectionTimeOut {
+      logout(errorMessage: 'Conneccion timeout');
     } catch (e) {
       logout(errorMessage: 'Error no controlado');
     }
@@ -29,7 +31,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   void registerUser(String email, String password, String fullName) async {
-    await authRepository.register(email, password, fullName);
+    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      final user = await authRepository.register(email, password, fullName);
+
+      _setUserCreate(user);
+    } on ConnectionTimeOut {
+      logout(errorMessage: 'Conneccion timeout');
+    } on UserExist {
+      logout(errorMessage: 'El Usuario ya Existe');
+    } catch (e) {
+      logout(errorMessage: 'Error no controlado');
+    }
   }
 
   void checkStatusUser(String token) async {
@@ -38,7 +51,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void _setLoggerUser(User user) {
     //todo: guardar el token Fisicamente
-    state = state.copyWith(user: user, authStatus: AuthStatus.authenticated);
+    state = state.copyWith(
+        user: user, authStatus: AuthStatus.authenticated, errorMessage: '');
+  }
+
+  void _setUserCreate(User user) {
+    //todo: guardar el token Fisicamente
+    state = state.copyWith(
+        user: null,
+        authStatus: AuthStatus.checking,
+        errorMessage: 'Usuario Creado Correctamente');
   }
 
   Future<void> logout({String? errorMessage}) async {

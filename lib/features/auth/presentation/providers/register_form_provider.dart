@@ -2,13 +2,15 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:teslo_android/features/auth/presentation/providers/providers.dart';
 import 'package:teslo_android/features/shared/shared.dart';
 
 //!3. StateNotifier - consume afuera
 final registerFormProvider =
     StateNotifierProvider.autoDispose<RegisterFormNotifier, RegisterFormState>(
         (ref) {
-  return RegisterFormNotifier();
+  final registerUserCallBack = ref.watch(authProvider.notifier).registerUser;
+  return RegisterFormNotifier(registerUserCallBack: registerUserCallBack);
 });
 
 class RegisterFormState {
@@ -72,7 +74,9 @@ class RegisterFormState {
 //!2. Como implementamos el notifier
 
 class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
-  RegisterFormNotifier() : super(RegisterFormState());
+  final Function(String, String, String) registerUserCallBack;
+  RegisterFormNotifier({required this.registerUserCallBack})
+      : super(RegisterFormState());
 
   onEmailChange(String value) {
     final newEmail = Email.dirty(value);
@@ -106,13 +110,14 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
             [newConfirmPassword, state.email, state.password, state.name]));
   }
 
-  onFormSubmit() {
+  onFormSubmit() async {
     _touchEveryField();
     _equalsPasswords();
 
     if (!state.isValid || !state.isEqualsPassword) return;
 
-    print(state);
+    await registerUserCallBack(
+        state.email.value, state.password.value, state.name.value);
   }
 
   _touchEveryField() {
