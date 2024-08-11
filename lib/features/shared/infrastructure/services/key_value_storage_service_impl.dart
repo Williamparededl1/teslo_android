@@ -1,0 +1,51 @@
+// ignore_for_file: pattern_never_matches_value_type
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:teslo_android/features/shared/infrastructure/services/key_value_storage_service.dart';
+
+class KeyValueStorageServiceImpl extends KeyValueStorageService {
+  Future<SharedPreferences> getSharedPrefs() async {
+    return await SharedPreferences.getInstance();
+  }
+
+  @override
+  Future<T?> getValue<T>(String key) async {
+    final prefs = await getSharedPrefs();
+
+    switch (T) {
+      case int _:
+        return prefs.getInt(key) as T?;
+
+      case String _:
+        return prefs.getString(key) as T?;
+
+      default:
+        throw UnimplementedError(
+            'GET not implemented for type ${T.runtimeType}');
+    }
+  }
+
+  @override
+  Future<bool> removeKey(String key) async {
+    final prefs = await getSharedPrefs();
+
+    return await prefs.remove(key);
+  }
+
+  @override
+  Future<void> setKeyValue<T>(String key, T value) async {
+    final prefs = await getSharedPrefs();
+
+    switch (T) {
+      case int _:
+        prefs.setInt(key, value as int);
+        break;
+      case String _:
+        prefs.setString(key, value as String);
+        break;
+      default:
+        throw UnimplementedError(
+            'SET not implemented for type ${T.runtimeType}');
+    }
+  }
+}
