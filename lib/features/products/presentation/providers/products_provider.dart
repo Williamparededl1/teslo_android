@@ -41,23 +41,6 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
         offset: state.offset + 10,
         products: [...state.products, ...products]);
   }
-
-  Future searchPage(String term) async {
-    if (state.isLoading) return;
-
-    state = state.copyWith(isLoading: true);
-
-    final products = await productsRepository.searchProductByTerm(term);
-    if (products.isEmpty) {
-      state = state.copyWith(isLoading: false);
-      return;
-    }
-
-    state = state.copyWith(
-        isLastPage: false,
-        isLoading: false,
-        products: [...state.products, ...products]);
-  }
 }
 
 class ProductsState {

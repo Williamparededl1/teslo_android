@@ -20,6 +20,9 @@ class ProductCard extends StatelessWidget {
         Text(product.title),
         const SizedBox(
           height: 20,
+        ),
+        Text(
+          '\$ ${product.price} ',
         )
       ],
     );
