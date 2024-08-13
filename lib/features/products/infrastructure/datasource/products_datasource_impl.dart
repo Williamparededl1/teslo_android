@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:teslo_android/config/config.dart';
 import 'package:teslo_android/features/products/domain/domain.dart';
+import 'package:teslo_android/features/products/infrastructure/infrastructure.dart';
 import 'package:teslo_android/features/products/infrastructure/mappers/product_mapper.dart';
+import 'package:teslo_android/features/products/infrastructure/mappers/product_search_mapper.dart';
 
 class ProductsDatasourceImpl extends ProductsDatasource {
   late final Dio dio;
@@ -37,8 +39,17 @@ class ProductsDatasourceImpl extends ProductsDatasource {
   }
 
   @override
-  Future<List<Product>> searchProductByTerm(String term) {
-    // TODO: implement searchProductByTerm
-    throw UnimplementedError();
+  Future<List<Product>> searchProductByTerm(String term) async {
+    try {
+      if (term.isEmpty) return [];
+      final response = await dio.get<List>('/products/all/$term');
+      final List<Product> products = [];
+      for (final product in response.data ?? []) {
+        products.add(ProductSearchMapper.jsonToEntity(product));
+      }
+      return products;
+    } catch (e) {
+      return [];
+    }
   }
 }

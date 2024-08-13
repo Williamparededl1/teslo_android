@@ -36,8 +36,8 @@ class RegisterScreen extends StatelessWidget {
                         size: 30, color: Colors.white)),
                 const Spacer(flex: 1),
                 Text('Crear cuenta',
-                    style:
-                        textStyles.titleLarge?.copyWith(color: Colors.white)),
+                    style: textStyles.titleLarge
+                        ?.copyWith(color: Colors.white, fontSize: 40)),
                 const Spacer(flex: 1),
               ],
             ),
@@ -88,7 +88,8 @@ class _RegisterForm extends ConsumerWidget {
       child: Column(
         children: [
           const SizedBox(height: 50),
-          Text('Nueva cuenta', style: textStyles.titleMedium),
+          Text('Nueva cuenta',
+              style: textStyles.titleMedium?.copyWith(fontSize: 30)),
           const SizedBox(height: 50),
           CustomTextFormField(
             label: 'Nombre completo',

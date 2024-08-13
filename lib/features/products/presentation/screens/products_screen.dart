@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
+import 'package:teslo_android/features/products/domain/domain.dart';
+import 'package:teslo_android/features/products/presentation/delegate/search_products_delegate.dart';
 import 'package:teslo_android/features/products/presentation/providers/providers.dart';
 import 'package:teslo_android/features/products/widgets/widgets.dart';
 import 'package:teslo_android/features/shared/shared.dart';
 
-class ProductsScreen extends StatelessWidget {
+class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
@@ -17,7 +20,24 @@ class ProductsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Products'),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded))
+          IconButton(
+              onPressed: () {
+                final searchProduct = ref.read(searchedProductsProvider);
+                final searchQuery = ref.read(searchQueryProvider);
+                showSearch<Product?>(
+                        query: searchQuery,
+                        context: context,
+                        delegate: SearchProductsDelegate(
+                            initialProducts: searchProduct,
+                            searchProduct: ref
+                                .read(searchedProductsProvider.notifier)
+                                .searchProductsByQuery))
+                    .then((product) {
+                  if (product == null) return;
+                  context.push('/product/${product.id}');
+                });
+              },
+              icon: const Icon(Icons.search_rounded))
         ],
       ),
       body: const _ProductsView(),
@@ -73,7 +93,9 @@ class _ProductsViewState extends ConsumerState {
         itemCount: productState.products.length,
         itemBuilder: (context, index) {
           final product = productState.products[index];
-          return ProductCard(product: product);
+          return GestureDetector(
+              onTap: () => context.push('/product/${product.id}'),
+              child: ProductCard(product: product));
         },
       ),
     );
