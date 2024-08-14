@@ -130,12 +130,17 @@ class _ProductItem extends StatelessWidget {
               height: 200,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  product.images.first,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) =>
-                      FadeIn(child: child),
-                ),
+                child: (product.images.isEmpty)
+                    ? Image.asset(
+                        'assets/images/no-image.jpg',
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        product.images.first,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) =>
+                            FadeIn(child: child),
+                      ),
               ),
             ),
             const SizedBox(

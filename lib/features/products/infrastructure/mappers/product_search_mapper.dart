@@ -12,8 +12,10 @@ class ProductSearchMapper {
         sizes: List<String>.from(json['sizes'].map((size) => size)),
         gender: json['gender'],
         tags: List<String>.from(json['tags'].map((tags) => tags)),
-        images:
-            List<String>.from(json["images"].map((x) => Image.fromJson(x).url)),
+        images: (json["images"] == [])
+            ? []
+            : List<String>.from(
+                json["images"].map((x) => Image.fromJson(x).url)),
         user: null,
       );
 }
