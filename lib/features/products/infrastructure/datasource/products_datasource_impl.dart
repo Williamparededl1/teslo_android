@@ -19,8 +19,9 @@ class ProductsDatasourceImpl extends ProductsDatasource {
   Future<Product> createUpdateProduct(Map<String, dynamic> productsLike) async {
     try {
       final String? productId = productsLike['id'];
-      final String method = (productId == null) ? 'POST' : 'PATCH';
-      final String url = (productId == null) ? '/post' : '/products/$productId';
+      final String method = (productId == 'new') ? 'POST' : 'PATCH';
+      final String url =
+          (productId == 'new') ? '/products' : '/products/$productId';
       productsLike.remove('id');
       final response = await dio.request(url,
           data: productsLike, options: Options(method: method));

@@ -16,9 +16,27 @@ class ProductNotifier extends StateNotifier<ProductState> {
       : super(ProductState(id: productId)) {
     loadProduct();
   }
+  Product newEmptyProduct() {
+    return Product(
+      id: 'new',
+      title: 'New Title',
+      price: 0.0,
+      description: ' New Description',
+      slug: 'new_title',
+      stock: 0,
+      sizes: [],
+      gender: 'kid',
+      tags: ['tags'],
+      images: [],
+    );
+  }
 
   Future<void> loadProduct() async {
     try {
+      if (state.id == 'new') {
+        state = state.copyWith(isLoading: false, product: newEmptyProduct());
+        return;
+      }
       final product = await productsRepository.getProductById(state.id);
       state = state.copyWith(isLoading: false, product: product);
     } catch (e) {

@@ -7,40 +7,45 @@ import 'package:teslo_android/features/shared/shared.dart';
 class ProductScreen extends ConsumerWidget {
   final String productId;
   const ProductScreen({super.key, required this.productId});
-  void showSnackBar(BuildContext context) {
+  void showSnackBar(BuildContext context, String producid) {
     ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Producto Actualizado')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+            'Producto ${(producid == 'new') ? 'Creado' : 'Actualizado'}')));
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productState = ref.watch(productProvider(productId));
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Producto'),
-        actions: [
-          IconButton(
-              onPressed: () {}, icon: const Icon(Icons.camera_alt_outlined))
-        ],
-      ),
-      body: productState.isLoading
-          ? const FullScreenLoader()
-          : _ProductView(product: productState.product!),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          productState.isLoading
-              ? const FullScreenLoader()
-              : ref
-                  .read(productFormProvider(productState.product!).notifier)
-                  .onFormSubmit()
-                  .then((value) {
-                  if (!value) return;
-                  showSnackBar(context);
-                });
-        },
-        child: const Icon(Icons.save_as_outlined),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Producto'),
+          actions: [
+            IconButton(
+                onPressed: () {}, icon: const Icon(Icons.camera_alt_outlined))
+          ],
+        ),
+        body: productState.isLoading
+            ? const FullScreenLoader()
+            : _ProductView(product: productState.product!),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            FocusScope.of(context).unfocus();
+            productState.isLoading
+                ? const FullScreenLoader()
+                : ref
+                    .read(productFormProvider(productState.product!).notifier)
+                    .onFormSubmit()
+                    .then((value) {
+                    if (!value) return;
+                    showSnackBar(context, productState.product!.id);
+                  });
+          },
+          child: const Icon(Icons.save_as_outlined),
+        ),
       ),
     );
   }
@@ -187,6 +192,7 @@ class _SizeSelector extends StatelessWidget {
       }).toList(),
       selected: Set.from(selectedSizes),
       onSelectionChanged: (newSelection) {
+        FocusScope.of(context).unfocus();
         onSizesChange(List.from(newSelection));
       },
       multiSelectionEnabled: true,
@@ -224,6 +230,7 @@ class _GenderSelector extends StatelessWidget {
         }).toList(),
         selected: {selectedGender},
         onSelectionChanged: (newSelection) {
+          FocusScope.of(context).unfocus();
           onGenerChange(newSelection.first);
         },
       ),
