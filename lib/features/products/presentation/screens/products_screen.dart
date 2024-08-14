@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:teslo_android/features/auth/presentation/providers/providers.dart';
 import 'package:teslo_android/features/products/domain/domain.dart';
 import 'package:teslo_android/features/products/presentation/delegate/search_products_delegate.dart';
 import 'package:teslo_android/features/products/presentation/providers/providers.dart';
@@ -14,9 +15,12 @@ class ProductsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
-
+    final userprovider = ref.watch(authProvider);
     return Scaffold(
-      drawer: SideMenu(scaffoldKey: scaffoldKey),
+      drawer: SideMenu(
+        scaffoldKey: scaffoldKey,
+        nombre: userprovider.user!.fullName,
+      ),
       appBar: AppBar(
         title: const Text('Products'),
         actions: [

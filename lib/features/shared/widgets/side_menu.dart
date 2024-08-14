@@ -5,8 +5,9 @@ import 'package:teslo_android/features/shared/shared.dart';
 
 class SideMenu extends ConsumerStatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final String nombre;
 
-  const SideMenu({super.key, required this.scaffoldKey});
+  const SideMenu({super.key, required this.scaffoldKey, required this.nombre});
 
   @override
   SideMenuState createState() => SideMenuState();
@@ -39,7 +40,7 @@ class SideMenuState extends ConsumerState<SideMenu> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 16, 10),
-            child: Text('Tony Stark', style: textStyles.titleSmall),
+            child: Text(widget.nombre, style: textStyles.titleSmall),
           ),
           const NavigationDrawerDestination(
             icon: Icon(Icons.home_outlined),
