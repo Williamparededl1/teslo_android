@@ -40,7 +40,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
       final product = await productsRepository.getProductById(state.id);
       state = state.copyWith(isLoading: false, product: product);
     } catch (e) {
-      print(e);
+      return;
     }
   }
 }
