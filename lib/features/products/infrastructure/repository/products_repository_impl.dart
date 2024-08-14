@@ -24,4 +24,14 @@ class ProductsRepositoryImpl extends ProductsRepository {
   Future<List<Product>> searchProductByTerm(String term) {
     return datasource.searchProductByTerm(term);
   }
+
+  @override
+  Future<List<String>> uploadPhotos(List<String> photos) {
+    return datasource.uploadPhotos(photos);
+  }
+
+  @override
+  Future<String> uploadFile(String path) {
+    return datasource.uploadFile(path);
+  }
 }

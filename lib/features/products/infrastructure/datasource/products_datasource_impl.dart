@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:teslo_android/config/config.dart';
 import 'package:teslo_android/features/products/domain/domain.dart';
@@ -23,6 +25,7 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       final String url =
           (productId == 'new') ? '/products' : '/products/$productId';
       productsLike.remove('id');
+      productsLike['images'] = await uploadPhotos(productsLike['images']);
       final response = await dio.request(url,
           data: productsLike, options: Options(method: method));
       final product = ProductMapper.jsonToEntity(response.data);
@@ -70,6 +73,42 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       return products;
     } catch (e) {
       return [];
+    }
+  }
+
+  @override
+  Future<List<String>> uploadPhotos(List<String> photos) async {
+    final photosToUpload = photos
+        .where(
+          (element) => element.contains('/'),
+        )
+        .toList();
+    final photosIgnore = photos
+        .where(
+          (element) => !element.contains('/'),
+        )
+        .toList();
+
+    final List<Future<String>> uploadjob = photosToUpload
+        .map(
+          (file) => uploadFile(file),
+        )
+        .toList();
+    final newImages = await Future.wait(uploadjob);
+
+    return [...photosIgnore, ...newImages];
+  }
+
+  @override
+  Future<String> uploadFile(String path) async {
+    try {
+      final fileName = path.split('/').last;
+      final FormData data = FormData.fromMap(
+          {'file': MultipartFile.fromFileSync(path, filename: fileName)});
+      final response = await dio.post('/files/product', data: data);
+      return response.data['image'];
+    } catch (e) {
+      throw Exception();
     }
   }
 }

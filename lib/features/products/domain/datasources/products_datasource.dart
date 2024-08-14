@@ -5,4 +5,6 @@ abstract class ProductsDatasource {
   Future<Product> getProductById(String id);
   Future<List<Product>> searchProductByTerm(String term);
   Future<Product> createUpdateProduct(Map<String, dynamic> productsLike);
+  Future<List<String>> uploadPhotos(List<String> photos);
+  Future<String> uploadFile(String path);
 }
